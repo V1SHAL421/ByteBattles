@@ -64,7 +64,7 @@ const LoginPage = () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL; // URL of the website
       
-      const res = await axios.post(`${API_URL}/login/login`, { username, password }); // Retrieve user ID from backend
+      const res = await axios.post(`${API_URL}/api/login/login`, { username, password }); // Retrieve user ID from backend
       
       console.log(`Login successful: ${res.data}`);
 
@@ -139,7 +139,7 @@ const SignUpPage = () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;// URL of the website
       
-      const res = await axios.post(`${API_URL}/login/sign_up`, formUserData); // Retrieve user ID from backend
+      const res = await axios.post(`${API_URL}/api/login/sign_up`, formUserData); // Retrieve user ID from backend
       
       toast({
         title: "Sign up successful",
@@ -195,8 +195,8 @@ const fetchBadgeDetails = async () => {
   try {
     const API_URL = process.env.REACT_APP_API_URL; // URL of the website
     
-    const badgeRes = await axios.get(`${API_URL}/badge/badge_id`, { params: { id: user_id } }); // Retrieve badge ID from backend
-    const pointsRes = await axios.get(`${API_URL}/badge/points_needed/${user_id}`); // Retrieve points needed from backend
+    const badgeRes = await axios.get(`${API_URL}/api/badge/badge_id`, { params: { id: user_id } }); // Retrieve badge ID from backend
+    const pointsRes = await axios.get(`${API_URL}/api/badge/points_needed/${user_id}`); // Retrieve points needed from backend
     
     setBadgeId(badgeRes.data.badge_id); // Sets badge ID
     setPointsNeeded(pointsRes.data.pointsNeeded); // Sets points needed
@@ -226,8 +226,8 @@ useEffect(() => {
       try {
         const API_URL = process.env.REACT_APP_API_URL; // URL of the website
 
-        await axios.put(`${API_URL}/badge/badge_id/${user_id}`); // Updates badge ID from backend
-        await axios.put(`${API_URL}/badge/points_needed/${user_id}`, { points_to_next_badge: 1000 }); // Updates points needed from backend
+        await axios.put(`${API_URL}/api/badge/badge_id/${user_id}`); // Updates badge ID from backend
+        await axios.put(`${API_URL}/api/badge/points_needed/${user_id}`, { points_to_next_badge: 1000 }); // Updates points needed from backend
         
         await fetchBadgeDetails(); // Refetch after updating
       } catch (error) {
@@ -258,7 +258,7 @@ useEffect(() => {
     try {
       const API_URL = process.env.REACT_APP_API_URL; // URL of the website
 
-      const res = await axios.get(`${API_URL}/quiz/questions`, {
+      const res = await axios.get(`${API_URL}/api/quiz/questions`, {
         params: { user_id },
       }); //Retrieves random question from backend
 
@@ -293,7 +293,7 @@ useEffect(() => {
     try {
       const API_URL = process.env.REACT_APP_API_URL; // URL of the website
 
-      const res = await axios.post(`${API_URL}/quiz/questions/quiz/${encodeURIComponent(question.question_name)}/${user_id}`, {
+      const res = await axios.post(`${API_URL}/api/quiz/questions/quiz/${encodeURIComponent(question.question_name)}/${user_id}`, {
         selected_option: selectedOption,
       }); // If the selected optoin is correct, points needed are reduced by 100 (if no more points then badge is incremented by 1 and points reset to 1000)
 
@@ -368,7 +368,7 @@ useEffect(() => {
         justifyContent='center'
         width='100%'
         py={60}
-        bgColor='cyan'
+        bgColor='turquoise'
         bgPosition='center'
         bgRepeat='no-repeat'
         mb={2}
@@ -388,7 +388,7 @@ useEffect(() => {
                 </Button>
               ))}
               
-              <Button mt={4} colorScheme='blue' onClick={submitAnswer} isDisabled={showNextQuestionButton}>
+              <Button mt={4} colorScheme='cyan' onClick={submitAnswer} isDisabled={showNextQuestionButton}>
                 Submit Answer
               </Button>
               {showNextQuestionButton && (
