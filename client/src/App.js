@@ -4,7 +4,7 @@ import { ChakraProvider, extendTheme, Box, Text, Badge, Button, Stack, Stat, Sta
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { useCallback } from 'react';
 
 const theme = extendTheme({})
 /* Title and login/sign up buttons of gamification platform */
@@ -178,96 +178,78 @@ const SignUpPage = () => {
 
 
 
-
 const MainPage = () => {
   const [question, setQuestion] = useState({});
   const [selectedOption, setSelectedOption] = useState(null);
   const [feedbackMsg, setFeedbackMsg] = useState('');
   const [badgeId, setBadgeId] = useState(null);
   const [pointsNeeded, setPointsNeeded] = useState(null);
+  const [showNextQuestionButton, setShowNextQuestionButton] = useState(false);
   const location = useLocation();
   const toast = useToast();
   const { user_id } = location.state || {};
-  const [showNextQuestionButton, setShowNextQuestionButton] = useState(false);
+
+  const API_URL = process.env.REACT_APP_API_URL; // URL of the website
 
 
-const fetchBadgeDetails = async () => {
-  try {
-    const API_URL = process.env.REACT_APP_API_URL; // URL of the website
-    
-    const badgeRes = await axios.get(`${API_URL}/api/badge/badge_id`, { params: { id: user_id } }); // Retrieve badge ID from backend
-    const pointsRes = await axios.get(`${API_URL}/api/badge/points_needed/${user_id}`); // Retrieve points needed from backend
-    
-    setBadgeId(badgeRes.data.badge_id); // Sets badge ID
-    setPointsNeeded(pointsRes.data.pointsNeeded); // Sets points needed
-  } catch (error) {
-    console.error('Failed to fetch user badge details:', error);
-    toast({ // Handles error
-      title: "Error",
-      description: "Failed to fetch user badge details.",
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  }
-};
+  const fetchBadgeID = useCallback(async () => {
+    try {
+      const badgeRes = await axios.get(`${API_URL}/api/badge/badge_id`, { params: { id: user_id } }); // Retrieve badge ID from backend
+      const pointsRes = await axios.get(`${API_URL}/api/badge/points_needed/${user_id}`);  // Retrieve points needed from backend
 
-useEffect(() => {
-  if (user_id) {
-    fetchBadgeDetails();
-  }
-}, [user_id, toast]);
+      setBadgeId(badgeRes.data.badge_id); // Sets badge ID
+      setPointsNeeded(pointsRes.data.pointsNeeded); // Sets points needed
 
+    } catch (error) {
+      toast({ // Handles error
+        title: "Error",
+        description: "Failed to fetch user badge details.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [API_URL, user_id, toast]);
 
-
-useEffect(() => {
-  const updateDetailsIfNeeded = async () => {
+  // Update Badge Details if points needed hits 0
+  const updateBadgeIDIfNeeded = useCallback(async () => {
     if (pointsNeeded === 0) {
       try {
-        const API_URL = process.env.REACT_APP_API_URL; // URL of the website
-
-        await axios.put(`${API_URL}/api/badge/badge_id/${user_id}`); // Updates badge ID from backend
-        await axios.put(`${API_URL}/api/badge/points_needed/${user_id}`, { points_to_next_badge: 1000 }); // Updates points needed from backend
-        
-        await fetchBadgeDetails(); // Refetch after updating
+        await axios.put(`${API_URL}/api/badge/badge_id/${user_id}`);
+        await axios.put(`${API_URL}/api/badge/points_needed/${user_id}`);
+        await fetchBadgeID(); // Refetch badge details
       } catch (error) {
-        console.error('Failed to update badge details:', error);
-        toast({ // Handles error
+        toast({
           title: "Update Error",
-          description: "Failed to update badge details.",
+          description: "There was a problem updating your badge details.",
           status: "error",
           duration: 5000,
           isClosable: true,
         });
       }
     }
-  };
+  }, [API_URL, user_id, pointsNeeded, toast, fetchBadgeID]);
 
-  updateDetailsIfNeeded();
-}, [pointsNeeded, user_id, toast, fetchBadgeDetails]);
+  // Check if pointsNeeded is 0 and if so will increment badge ID
+  useEffect(() => {
+    updateBadgeIDIfNeeded();
+  }, [pointsNeeded, updateBadgeIDIfNeeded]);
 
-
-
-
-
-
-
-
-  const displayQuestion = async () => {
-
+  // Display Question
+  const displayQuestion = useCallback(async () => {
     try {
-      const API_URL = process.env.REACT_APP_API_URL; // URL of the website
+      const res = await axios.get(`${API_URL}/api/quiz/questions`, { params: { user_id } }); //Retrieves random question from backend
 
-      const res = await axios.get(`${API_URL}/api/quiz/questions`, {
-        params: { user_id },
-      }); //Retrieves random question from backend
-
-      setQuestion(res.data.question); // Sets question
+      setQuestion(res.data.question); // Sets question name, content, options and answer
       setSelectedOption(null);
       setFeedbackMsg('');
+      setShowNextQuestionButton(false) // Disables next question button
+
+      // Fetch badge ID after displaying a new question
+      await fetchBadgeID();
     } catch (error) {
       console.error(`Retrieval of random question failed: ${error}`);
-      toast({ // Handles error
+      toast({
         title: "Error",
         description: "Failed to retrieve the question.",
         status: "error",
@@ -275,11 +257,11 @@ useEffect(() => {
         isClosable: true,
       });
     }
-  };
+  }, [API_URL, user_id, toast, fetchBadgeID]);
 
-  const submitAnswer = async () => {
+  // Submit Answer
+  const submitAnswer = useCallback(async () => {
     if (selectedOption === null) { // Handles case when no answers are selected
-      console.log(`No option selected`);
       toast({
         title: "No Selection",
         description: "Please select an option before submitting.",
@@ -289,17 +271,14 @@ useEffect(() => {
       });
       return;
     }
-  
-    try {
-      const API_URL = process.env.REACT_APP_API_URL; // URL of the website
 
+    try {
       const res = await axios.post(`${API_URL}/api/quiz/questions/quiz/${encodeURIComponent(question.question_name)}/${user_id}`, {
         selected_option: selectedOption,
-      }); // If the selected optoin is correct, points needed are reduced by 100 (if no more points then badge is incremented by 1 and points reset to 1000)
+      });  // If the selected option is correct, points needed are reduced by 100 (if no more points then badge is incremented by 1 and points reset to 1000)
 
-      console.log(`Response received from submission: ${res.data}`);
       setFeedbackMsg(res.data.Message);
-  
+
       if (res.data.Message === "Correct answer") {
         toast({ // Display congratulations for correct answer
           title: "Correct!",
@@ -309,7 +288,7 @@ useEffect(() => {
           isClosable: true,
         });
       } else {
-        toast({ // Notify user of the correct answer if they were wrong
+        toast({
           title: "Incorrect!",
           description: `Correct answer: ${res.data.correctAnswer}`,
           status: "error",
@@ -317,11 +296,11 @@ useEffect(() => {
           isClosable: true,
         });
       }
-  
+
       setShowNextQuestionButton(true); // Show "Next Question" button
-    } catch (error) {
+    } catch (error) { // Notify user of the correct answer if they were wrong
       console.error(`Error submitting answer: ${error}`);
-      toast({ // Handles error
+      toast({
         title: "Submission Error",
         description: "There was a problem submitting your answer.",
         status: "error",
@@ -329,38 +308,27 @@ useEffect(() => {
         isClosable: true,
       });
     }
-  };
+  }, [API_URL, user_id, selectedOption, question, toast]);
 
   useEffect(() => {
     if (user_id) {
-      displayQuestion(); // Display question if user is logged in
+      displayQuestion();  // Display question if user is logged in
     }
-  }, [user_id]);
-
-
-  const fetchNextQuestion = async () => { // Fetches the next question
-    displayQuestion(); 
-    setShowNextQuestionButton(false); 
-    setSelectedOption(null); 
-    setFeedbackMsg(''); 
-
-    await fetchBadgeDetails() // Refetches the badge details of the user
-  };
+  }, [user_id, displayQuestion]);
 
   return (
     <>
-
-<Box position="absolute" top="4" right="4" p="4" bgColor="whiteAlpha.900" borderRadius="lg" shadow="md">
-      <VStack spacing={3}>
-        <Badge colorScheme="purple" variant="solid" fontSize="1em" px={2} py={1} borderRadius="full">
-          Badge {badgeId}
-        </Badge>
-        <Stat>
-          <StatLabel>Points Needed</StatLabel>
-          <StatNumber>{pointsNeeded}</StatNumber>
-        </Stat>
-      </VStack>
-    </Box>
+      <Box position="absolute" top="4" right="4" p="4" bgColor="whiteAlpha.900" borderRadius="lg" shadow="md">
+        <VStack spacing={3}>
+          <Badge colorScheme="purple" variant="solid" fontSize="1em" px={2} py={1} borderRadius="full">
+            Badge {badgeId}
+          </Badge>
+          <Stat>
+            <StatLabel>Points Needed</StatLabel>
+            <StatNumber>{pointsNeeded}</StatNumber>
+          </Stat>
+        </VStack>
+      </Box>
       <Box
         display='flex'
         flexDirection='column'
@@ -378,25 +346,39 @@ useEffect(() => {
           <>
             <Text fontSize="4xl" color="white" mb={4}>{question.question_content}</Text>
             <VStack spacing={4}>
-              {[question.option_one, question.option_two, question.option_three, question.option_four].map((option, index) => (
-                <Button
-                  key={index}
-                  colorScheme={selectedOption === index + 1 ? 'orange' : 'teal'}
-                  onClick={() => setSelectedOption(selectedOption === index + 1 ? null : index + 1)}
-                >
-                  {index + 1}. {option}
-                </Button>
-              ))}
-              
-              <Button mt={4} colorScheme='cyan' onClick={submitAnswer} isDisabled={showNextQuestionButton}>
-                Submit Answer
+              <Button
+                colorScheme={selectedOption === 1 ? 'orange' : 'teal'}
+                onClick={() => setSelectedOption(1)}
+              >
+                1. {question.option_one}
               </Button>
-              {showNextQuestionButton && (
-                <Button mt={4} colorScheme='green' onClick={fetchNextQuestion}>
-                  Next Question
-                </Button>
-              )}
+              <Button
+                colorScheme={selectedOption === 2 ? 'orange' : 'teal'}
+                onClick={() => setSelectedOption(2)}
+              >
+                2. {question.option_two}
+              </Button>
+              <Button
+                colorScheme={selectedOption === 3 ? 'orange' : 'teal'}
+                onClick={() => setSelectedOption(3)}
+              >
+                3. {question.option_three}
+              </Button>
+              <Button
+                colorScheme={selectedOption === 4 ? 'orange' : 'teal'}
+                onClick={() => setSelectedOption(4)}
+              >
+                4. {question.option_four}
+              </Button>
             </VStack>
+            <Button mt={4} colorScheme='cyan' onClick={submitAnswer} isDisabled={showNextQuestionButton}>
+              Submit Answer
+            </Button>
+            {showNextQuestionButton && (
+              <Button mt={4} colorScheme='green' onClick={displayQuestion}>
+                Next Question
+              </Button>
+            )}
             {feedbackMsg && <Text fontSize="2xl" color="white" mt={4}>{feedbackMsg}</Text>}
           </>
         )}
@@ -404,6 +386,7 @@ useEffect(() => {
     </>
   );
 };
+
 
 
 
