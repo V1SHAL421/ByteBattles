@@ -8,6 +8,10 @@ import {
 
 const app = express()
 
+app.get("/health_check", (req, res, next) => {
+    return res.status(200).json({"Message": "Health Check Successful"})
+})
+
 app.use(cors());
 
 app.use(express.json());
