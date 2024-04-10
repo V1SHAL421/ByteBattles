@@ -43,12 +43,12 @@ loginRouter.post('/sign_up', async (req, res, next) => {
             badge_id: 0, 
             points_to_next_badge: 1000, 
             recent_topic: null})
-        console.log(`Insertion result:  ${result}`)
+        console.log(`Insertion result:  ${JSON.stringify(result)}`)
         if (result) {
             const { data, error } = result
 
             if (error) {
-                console.log(`Error occurred:  ${error}`)
+                console.log(`Error occurred:  ${JSON.stringify(error)}`)
                 return res.status(400).json({message: "Sign up failed"})
             }
             else {

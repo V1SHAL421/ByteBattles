@@ -1,4 +1,4 @@
-class MyInterface {
+class databaseInterface {
     // SELECT a column of a table
     select(db, table, column) {
       

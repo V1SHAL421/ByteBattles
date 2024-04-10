@@ -38,6 +38,8 @@ test.serial('POST /sign_up - success scenario', async t => {
     lastname: 'User'
   });
 
+  console.log(`The response for signing a user up is: ${JSON.stringify(response)}`)
+
   t.is(response.status, 200); // Test whether response generates a status code 200
   t.deepEqual(response.body, {
     "message": "Sign up successful" // Test whether the body of the response is produced as expected message: 'Sign up successful' });
