@@ -52,8 +52,8 @@ const HomePage = () => (
     borderWidth='thick'
     >
     <Stack spacing={4} direction='row' align='center'>
-      <Link to="/login"><Button colorScheme='teal' size='lg' variant='solid'>Log In</Button></Link>
-      <Link to="/signup"><Button colorScheme='teal' size='lg' variant='solid'>Sign Up</Button></Link>
+      <Link to="/log_in"><Button colorScheme='teal' size='lg' variant='solid'>Log In</Button></Link>
+      <Link to="/sign_up"><Button colorScheme='teal' size='lg' variant='solid'>Sign Up</Button></Link>
     </Stack>
   </Box>
   </React.Fragment>
@@ -445,8 +445,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/log_in" element={<LoginPage />} />
+          <Route path="/sign_up" element={<SignUpPage />} />
           <Route path="/mainpage" element={<MainPage />} />
         </Routes>
       </ChakraProvider>
