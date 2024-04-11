@@ -20,9 +20,8 @@ const app = express();
 app.use(express.json());
 app.use(quizRouter);
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   req.dbQuery = dbQuery;
-  next();
 });
 
 // Test route on getting a random question
@@ -69,5 +68,5 @@ test.serial('POST /questions/quiz/:questionName/:user_id handles correct answer'
 
   t.is(response.status, 200); // Test whether response generates a status code 200
   t.true(response.body.Message.includes('Correct'));
-  t.true('pointsReduced' in response.body);
+  t.true('points_reduced' in response.body);
 });

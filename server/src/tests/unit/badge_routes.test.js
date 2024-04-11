@@ -18,9 +18,8 @@ const app = express();
 app.use(express.json());
 app.use(badgeRouter);
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   req.dbQuery = dbQuery;
-  next();
 });
 
 // Test route on getting the points needed for the next badge for a certain user

@@ -12,7 +12,7 @@ import { SupabaseQueryClass } from '../../utils/databaseInterface.js';
 
 
 
-// Mock bcrypt.hash
+// Stub bcrypt.hash
 sinon.stub(bcrypt, 'hash').resolves('hashedPassword');
 
 

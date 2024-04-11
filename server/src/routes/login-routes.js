@@ -10,13 +10,13 @@ import logger from '../middleware/logging.js';
 const loginRouter = new Router()
 const dbQuery = new SupabaseQueryClass()
 /* Health check */
-loginRouter.get('/health_check', (req, res, next) => {
+loginRouter.get('/health_check', (req, res) => {
     logger.info("Health Check Successful");
     return res.status(200).json({Status: "Health Check Successful"})
 })
 
 /* Inserts user details into database */
-loginRouter.post('/sign_up', async (req, res, next) => {
+loginRouter.post('/sign_up', async (req, res) => {
     const { username, password, confirmPassword, email, firstname, lastname} = req.body
     // Checks if all input fields have been filled
     if (!username || !password || !confirmPassword || !email || !firstname || !lastname) {
@@ -71,7 +71,7 @@ loginRouter.post('/sign_up', async (req, res, next) => {
 })
 
 /* Checks if user details are in database */
-loginRouter.post('/login', async (req, res, next) => {
+loginRouter.post('/login', async (req, res) => {
     const { username, password } = req.body
 
     if (!username || !password) { // Checks whether input fields have been filled

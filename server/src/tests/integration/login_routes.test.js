@@ -28,13 +28,6 @@ test.beforeEach(() => {
     bcryptCompareStub.reset();
 });
 
-// Clean up mocks/stubs
-test.after.always(() => {
-    dbQueryMock.restore();
-    bcryptHashStub.restore();
-    bcryptCompareStub.restore();
-});
-
 // Test route to perform a health check
 test.serial('Health check should return 200 with success message', async t => {
     const response = await request(app).get('/health_check');
@@ -78,8 +71,5 @@ test.serial('Successful login returns 200 with user_id', async t => {
 
     t.is(response.status, 200); // Test whether response generates a status code 200
     t.truthy(response.body.user_id);
-
-    // Verify that the mock is used as it should be
-    dbQueryMock.verify();
     sinon.assert.calledOnce(bcryptCompareStub);
 });

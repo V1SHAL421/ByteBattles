@@ -9,7 +9,7 @@ const quizRouter = new Router()
 const dbQuery = new SupabaseQueryClass()
 
 /* Retrieves a random question from the database */
-quizRouter.get("/questions", async (req, res, next) => {
+quizRouter.get("/questions", async (req, res) => {
     const { user_id } = req.query; // Retrieves user ID
 
     try {
@@ -61,7 +61,7 @@ quizRouter.post("/questions/quiz/:questionName/:user_id", async (req, res) => {
 
             return res.status(200).json({
                 "Message": "Correct answer",
-                "pointsReduced": user.points_to_next_badge - new_points,
+                "points_reduced": user.points_to_next_badge - new_points,
                 "nextBadge": new_points,
             });
         } else {

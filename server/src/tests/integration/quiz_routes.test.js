@@ -11,15 +11,15 @@ import quizRouter from '../../routes/quiz-routes.js';
 import { SupabaseQueryClass } from '../../utils/databaseInterface.js';
 
 
-// Mock the SupabaseQueryClass with a stub instance
-const dbQueryMock = sinon.createStubInstance(SupabaseQueryClass);
+// Mock the SupabaseQueryClass
+const dbQueryMock = sinon.mock(SupabaseQueryClass.prototype);
 
 const app = express();
 app.use(express.json());
 app.use(quizRouter);
 
 // Mock dependencies injection
-app.use((req, res, next) => {
+app.use((req, res) => {
   req.dbQuery = dbQueryMock;
   next();
 });

@@ -8,7 +8,7 @@ const badgeRouter = new Router()
 const dbQuery = new SupabaseQueryClass()
 
 /* Retrieves the points needed for the user to achieve the next badge */
-badgeRouter.get("/points_needed/:id", async(req, res, next) => {
+badgeRouter.get("/points_needed/:id", async(req, res) => {
     const { id } = req.params; // Retrieve user ID
 
     try {
@@ -28,7 +28,7 @@ badgeRouter.get("/points_needed/:id", async(req, res, next) => {
 });
 
 /* Retrieves the user's current badge ID */
-badgeRouter.get("/badge_id", async(req, res, next) => {
+badgeRouter.get("/badge_id", async(req, res) => {
 
     const {id} = req.query
 
@@ -52,7 +52,7 @@ badgeRouter.get("/badge_id", async(req, res, next) => {
 })
 
 /* Updates the user's badge ID */
-badgeRouter.put("/badge_id/:id", async (req, res, next) => {
+badgeRouter.put("/badge_id/:id", async (req, res) => {
     const { id } = req.params; // Retrieves user ID
 
     try {
@@ -85,7 +85,7 @@ badgeRouter.put("/badge_id/:id", async (req, res, next) => {
 });
 
 /* Resets the user's points needed */
-badgeRouter.put("/points_needed/:id", async(req, res, next) => {
+badgeRouter.put("/points_needed/:id", async(req, res) => {
     const { id } = req.params
 
     try {

@@ -8,7 +8,7 @@ import {
 
 const app = express()
 
-app.get("/health_check", (req, res, next) => {
+app.get("/health_check", (req, res) => {
     return res.status(200).json({"Message": "Health Check Successful"})
 })
 
