@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import { ChakraProvider, extendTheme, Box, Text, Badge, Button, Stack, Stat, StatLabel, StatNumber, Input, useToast, VStack } from "@chakra-ui/react";
+import { ChakraProvider, Center, Divider, Box, Flex, Heading, Text, Image, Badge, Button, Stack, Stat, StatLabel, StatNumber, Input, useToast, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCallback } from 'react';
+import bytes from './images/bytes.png'
 
-const theme = extendTheme({})
 /* Title and login/sign up buttons of gamification platform */
 const HomePage = () => (
   
@@ -16,13 +16,28 @@ const HomePage = () => (
     alignItems='center'
     justifyContent='center'
     width='100%'
-    py={60}
-    bgColor={'cyan'}
+    pb={60}
+    bgColor='lightcyan'
     bgRepeat='no-repeat'
     borderWidth='thick'
-    borderBlockEndColor='turqoise'
     >
-    <Text fontSize="6xl" color="indigo">Welcome To Byte Battles</Text>
+    <Stack>
+    <Text fontSize="6xl" color="indigo" padding='20'>Welcome To Byte Battles</Text>
+    <Text fontSize="4x1" color="violet">
+      Here at Byte Battles you can earn badges through correctly answering computer science based multiple choice questions.
+    </Text>
+    <Text fontSize="4x1" color="violet" textAlign='center'>
+    Explore with us into the field of technology!
+    </Text>
+    <Flex justifyContent="center" alignItems="center" padding="10">
+    <Image 
+    borderRadius="full"
+    boxSize="300px"
+    src={bytes}
+    alt="Futuristic Bytes"
+    />
+    </Flex>
+    </Stack>
   </Box>
 
   <Box
@@ -30,11 +45,11 @@ const HomePage = () => (
     alignItems='center'
     justifyContent='center'
     width='100%'
-    py={60}
-    bgColor={'cyan'}
+    pt="10"
+    pb="60"
+    bgColor='lightcyan'
     bgRepeat='no-repeat'
     borderWidth='thick'
-    borderBlockEndColor='turqoise'
     >
     <Stack spacing={4} direction='row' align='center'>
       <Link to="/login"><Button colorScheme='teal' size='lg' variant='solid'>Log In</Button></Link>
@@ -49,7 +64,28 @@ const HomePage = () => (
 );
 /* About Page */
 const AboutPage = () => (
-  <Text fontSize="xl" color="indigo">About Page</Text>
+  <Box position='relative' padding='10'>
+    <Heading textAlign='center' color='darkblue'>
+    About Page
+    </Heading>
+  <Center height='30px'>
+    <Divider orientation='vertical' />
+  </Center>
+    <Text fontSize="xl" color="indigo" padding='5'>
+    Our gamification platform aims to make learning engaging and enjoyable by integrating game mechanics into the learning experience. 
+    On this platform, users can earn points badges as they answer more and more questions correctly. These rewards serve as incentives to motivate users during the learning process. 
+    </Text>
+    <Divider />
+    <Text fontSize="xl" color="indigo" padding='5'>
+    After signing up and logging in, you will be directed to the main page with a question displayed. On the top right is your current progress in the form of your badge ID and the
+    number of points needed for the next badge. 
+    </Text>
+    <Divider />
+    <Text fontSize="xl" color="indigo" padding='5'>
+    To answer the displayed question, select an option and press "Submit Answer". You may select a different answer before submitting if you change your mind. After submitting, you will receive
+    a notification informing you on whether you got the question correct or not. Then you can press the Next Question button. If you got the question correct, upon pressing the Next Question button
+    you will gain 100 points. If you reach 0 points needed for the next badge, you receive your new badge!</Text>
+  </Box>
 );
 
 /* Login page ensuring input data matches data in database */
@@ -87,7 +123,7 @@ const LoginPage = () => {
 
   return (
     <Box>
-      <Text fontSize="xl" color="indigo" mb={4}>Log In Page</Text>
+      <Text fontSize="6xl" color="indigo" mb={4}>Log In Page</Text>
       {errorMsg && <Text color="red.500">{errorMsg}</Text>}
       <form onSubmit={handleSubmit}>
         <Input
@@ -335,10 +371,11 @@ const MainPage = () => {
         alignItems='center'
         justifyContent='center'
         width='100%'
-        py={60}
+        pb="500"
         bgColor='turquoise'
         bgPosition='center'
         bgRepeat='no-repeat'
+        height="100vh"
         mb={2}
       >
         <Text fontSize="6xl" mb={4} color="indigo">Here is your next question!</Text>
@@ -398,7 +435,7 @@ function App() {
 
   return (
     <Router>
-      <ChakraProvider theme={theme}>
+      <ChakraProvider>
         <Box as="nav">
           <Stack spacing={4} direction='row' align='center'>
             <Link to="/"><Button colorScheme='teal' size='lg' variant='outline'>Home</Button></Link>
