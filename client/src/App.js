@@ -23,7 +23,7 @@ const HomePage = () => (
     >
     <Stack>
     <Text fontSize="6xl" color="indigo" padding='20'>Welcome To Byte Battles</Text>
-    <Text fontSize="4x1" color="violet">
+    <Text fontSize="5x1" color="violet">
       Here at Byte Battles you can earn badges through correctly answering computer science based multiple choice questions.
     </Text>
     <Text fontSize="4x1" color="violet" textAlign='center'>
