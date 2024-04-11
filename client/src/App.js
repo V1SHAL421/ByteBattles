@@ -45,8 +45,8 @@ const HomePage = () => (
     alignItems='center'
     justifyContent='center'
     width='100%'
-    pt="10"
-    pb="60"
+    pt={10}
+    pb={60}
     bgColor='lightcyan'
     bgRepeat='no-repeat'
     borderWidth='thick'
@@ -371,7 +371,7 @@ const MainPage = () => {
         alignItems='center'
         justifyContent='center'
         width='100%'
-        pb="500"
+        pb={500}
         bgColor='turquoise'
         bgPosition='center'
         bgRepeat='no-repeat'
