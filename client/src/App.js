@@ -123,7 +123,7 @@ const LoginPage = () => {
 
   return (
     <Box>
-      <Text fontSize="6xl" color="indigo" mb={4}>Log In Page</Text>
+      <Text fontSize="6xl" color="indigo" mb={4}>Log In</Text>
       {errorMsg && <Text color="red.500">{errorMsg}</Text>}
       <form onSubmit={handleSubmit}>
         <Input
@@ -195,7 +195,7 @@ const SignUpPage = () => {
 
   return (
     <Box p={4}>
-      <Text fontSize="2xl" mb={4}>Sign Up</Text>
+      <Text fontSize="6xl" color="indigo" mb={4}>Sign Up</Text>
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
           <Input placeholder="Username" name="username" value={formUserData.username} borderColor="royalblue" onChange={handleChange} />
