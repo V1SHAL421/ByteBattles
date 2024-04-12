@@ -56,11 +56,12 @@ To get started with Byte Battles, follow these steps:
 
 ### Usage
 
-1. Start the server:
+1. Before starting the server, please contact my email posted below for the Supabase URL and key to post in your .env.
+2. Start the server:
    ```sh
    cd server && npm start
    ```
-2. Start the client:
+3. Start the client:
    ```sh
    cd ../client && npm start
    ```
@@ -68,7 +69,7 @@ To get started with Byte Battles, follow these steps:
 
 ## Contact
 
-For support or inquiries, please contact vishalmkumar3@gmail.com
+For support or inquiries, please contact k21065527@kcl.ac.uk
 
 
 </div>
